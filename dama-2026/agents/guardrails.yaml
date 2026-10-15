@@ -1,0 +1,27 @@
+# Four gateways as data. SYNTHETIC SAMPLE DATA ONLY.
+# Mirrors gateways/common.py POLICY; tests fail if they drift apart.
+agent: UW-Summary-Agent v0.3
+owner: Underwriting Operations Manager
+G1_use:
+  classes: [PUBLIC, INTERNAL, SENSITIVE]
+  sensitive_fields: [applicant_name, date_of_birth, ssn, phone, email, home_address, health_note]
+  sensitive_routing: local-only    # raw sensitive data never leaves the machine
+  default_when_unsure: SENSITIVE
+G2_prompt:
+  instructions_locked: true
+  document_text_is_data: true
+  allowed_tools: [read_assigned_file, write_summary, cite_source_line, lookup_form_edition]
+  never_allowed: [move_money, contact_customer, change_coverage, follow_document_instructions, approve_own_work]
+  unknown_tool: deny
+G3_context:
+  role_access:
+    underwriting: [underwriting]
+    life_underwriting: [life_underwriting]
+    reinsurance: [reinsurance]
+  max_lines_per_query: 2
+  citation_required: "[DOC:LINE]"
+G4_selfcheck_exit:
+  on_unreconcilable: fail_closed
+  never: [guess, average, pick_higher]
+  escalate_to: Reinsurance Claims Analyst
+  audit_log: out/flight-recorder.jsonl
