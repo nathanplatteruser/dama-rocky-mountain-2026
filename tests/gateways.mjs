@@ -30,16 +30,21 @@ for(const [bn,bt] of [['chromium',chromium],['webkit',webkit],['firefox',firefox
  if(SHOTS&&bn==='chromium')await p.screenshot({path:SHOTS+'/gw-step5.png',fullPage:true});
  ok(bn+' no page errors',errs.length===0);if(errs.length)console.log(errs);
  await b.close()}
-// Closer comparison table: four approaches, editable assumptions, sources, in the evidence pack
+// Closer comparison cards: four approaches, bottom line, editable assumptions, sources, in the evidence pack
 {
  const b=await chromium.launch();const p=await b.newPage({viewport:{width:1440,height:900},acceptDownloads:true});const errs=[];p.on('pageerror',e=>errs.push(String(e)));
  await p.goto(base+'#step8');
- const rows=await p.locator('#compare tr[data-cmp]').count();
+ const rows=await p.locator('#compare [data-cmp]').count();
  ok('compare: four approaches',rows===4);
  const t=await p.locator('#compare').innerText();
  ok('compare: labeled estimates + BLS rate + sources',t.includes('illustrative estimates')&&(await p.locator('#cmp-panel').innerText()).includes('37.51')&&t.includes('bls.gov')===false&&await p.locator('#compare a[href*="bls.gov"]').count()===1&&await p.locator('#compare a[href*="doi.org"]').count()===1);
- const cost=async()=>p.locator('#compare tr[data-cmp]').first().locator('td').nth(3).innerText();
+ const cost=async()=>p.locator('#compare [data-cmp]').first().locator('.cmp-labor').innerText();
  const c1=await cost();ok('compare: default fully-human cost = 30 x 30 min x $38',c1==='$570');
+ const bl=async i=>p.locator('#compare [data-cmp]').nth(i).locator('.cmp-bottom').innerText();
+ ok('compare: bottom lines at defaults',(await bl(0)).startsWith('$570')&&(await bl(0)).includes('not estimated')&&(await bl(1))==='$380'&&(await bl(2))==='$4,838'&&(await bl(3))==='$105');
+ ok('compare: errors, exposure, traps, audit in plain words',(await p.locator('#compare [data-cmp]').nth(2).innerText()).includes('+$4,800 paid')&&(await p.locator('#compare [data-cmp]').nth(2).innerText()).includes('Missed all 27 traps')&&(await p.locator('#compare [data-cmp]').nth(1).innerText()).includes('$6,000 reserve')&&/\d+ of \d+ traps caught/.test(await p.locator('#compare [data-cmp]').nth(3).innerText()));
+ const co=await p.locator('#cmp-callout').innerText();ok('compare: callout cheapest to run vs bottom line',co.includes('Cheapest to run: Single-pass AI')&&co.includes('bottom line once errors paid are counted: Agentic'));
+ await p.fill('#cmp-herr','2000');ok('compare: human error input adds to bottom line',(await bl(0))==='$2,570');await p.fill('#cmp-herr','0');
  await p.fill('#cmp-batch','60');ok('compare: batch edit recalculates',(await cost())==='$1,140');
  await p.fill('#cmp-rate','50');ok('compare: rate edit recalculates',(await cost())==='$1,500');
  const panelTop=(await p.locator('#cmp-panel').boundingBox()).y<(await p.locator('#dl').boundingBox()).y;ok('compare: inputs panel at top of closer',panelTop);
@@ -48,7 +53,7 @@ for(const [bn,bt] of [['chromium',chromium],['webkit',webkit],['firefox',firefox
  await p.click('#cmp-reset');ok('compare: reset to defaults',(await cost())==='$570'&&(await p.inputValue('#cmp-rate'))==='38'&&(await p.inputValue('#cmp-batch'))==='30');
  if(SHOTS)await p.screenshot({path:SHOTS+'/closer-inputs.png'});
  await p.fill('#cmp-batch','60');
- ok('compare: agentic row shows ledger audit trail',(await p.locator('#compare tr[data-cmp]').nth(3).innerText()).includes('Yes, every step'));
+ ok('compare: agentic row shows ledger audit trail',(await p.locator('#compare [data-cmp]').nth(3).innerText()).includes('Yes, every step'));
  const [dl]=await Promise.all([p.waitForEvent('download'),p.click('#dl')]);const fp='/tmp/pack-cmp.html';await dl.saveAs(fp);
  const txt=(await import('fs')).readFileSync(fp,'utf8');ok('compare: table in downloaded evidence pack',txt.includes('compare-pack')&&txt.includes('Standard OCR + human review')&&txt.includes('Items per batch 60'));
  ok('compare: no page errors',errs.length===0);if(errs.length)console.log(errs);await b.close();
