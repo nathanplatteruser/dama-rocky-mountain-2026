@@ -87,6 +87,8 @@ for mode in ["adversarial", "compliant"]:
         check(f"{tag}: banner and summary flag cloud send", "CLOUD: synthetic data goes to the provider" in p.stdout and f"Model: {backend} ({want_model})" in p.stdout)
         check(f"{tag}: same events as the local Ollama run (plus egress lines)",
               [e for e in ev if e != "CLOUD EGRESS CHECKED"] == local_events, f"{ev} vs {local_events}")
+        if backend == "xai":
+            check(f"{tag}: Grok-style tag after the period reached G3 and was read correctly", ". [PC-2026-0417:P3]" in p.stdout)
         if mode == "adversarial":
             check(f"{tag}: G1 echoed SSN withheld", "OUTPUT DISCARDED" in ev and "000-12-3456" not in p.stdout.split("model sees:")[1])
             check(f"{tag}: G2 injected move_money BLOCKED", "BLOCKED" in ev and "proposed move_money" in p.stdout)

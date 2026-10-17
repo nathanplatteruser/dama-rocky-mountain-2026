@@ -45,15 +45,20 @@ The Ollama mode refuses to call any Ollama host other than localhost. The guardr
 
 ## Cloud model option (optional, paid)
 
-Same labs, same prompts, same four gateways, same audit log. Only the model changes. Use it if you would rather run Claude, Grok, or ChatGPT than install a local model. You bring your own API key.
+Two versions, both run live, same labs:
 
-| Backend | Provider | Key (environment variable) | Default model | Cost |
+- **Free local:** mock mode or Ollama. No account, no key, nothing leaves the laptop. Cost: $0.
+- **Paid cloud:** Claude, Grok, or ChatGPT with your own API key, billed per token to your account. Pick this if you cannot install Ollama, your laptop is slow, or you want a frontier model.
+
+Same prompts, same four gateways, same audit log. Only the model changes.
+
+| Backend | Provider | Key (environment variable) | Default model | Rough cost per full run |
 |---|---|---|---|---|
 | `mock` (default) | none, scripted | none | scripted | Free |
 | `ollama` | your laptop | none | `llama3.1:8b` | Free |
-| `anthropic` | Anthropic Claude | `ANTHROPIC_API_KEY` | `claude-opus-5-5` | Paid, per token |
-| `xai` | xAI Grok | `XAI_API_KEY` | `grok-4.7` | Paid, per token |
-| `openai` | OpenAI (ChatGPT models) | `OPENAI_API_KEY` | `gpt-6.1-sol` | Paid, per token |
+| `anthropic` | Anthropic Claude | `ANTHROPIC_API_KEY` | `claude-opus-5-5` (Claude Opus 5.5) | about 5 to 15 cents |
+| `xai` | xAI Grok | `XAI_API_KEY` | `grok-4.7` (Grok 4.7) | about 1 to 5 cents |
+| `openai` | OpenAI (ChatGPT models) | `OPENAI_API_KEY` | `gpt-6.1-sol` (GPT-6.1 Sol); flagship `gpt-6-astra` about 10 to 40 cents | about 2 to 8 cents |
 | `compatible` | any OpenAI-compatible server (OpenRouter, Azure, LM Studio, vLLM) | `FR_API_KEY` (optional for local servers) | set `FR_MODEL`; also set `FR_BASE_URL` | Depends on the server |
 
 ```bash
@@ -66,15 +71,24 @@ FR_BACKEND=openai python3 run_all.py    # needs OPENAI_API_KEY; try FR_MODEL=gpt
 FR_BACKEND=compatible FR_BASE_URL=https://openrouter.ai/api/v1 FR_MODEL=<model> FR_API_KEY=... python3 run_all.py
 ```
 
-Windows PowerShell: `$env:ANTHROPIC_API_KEY="..."; $env:FR_BACKEND="anthropic"; py run_all.py`. Switch back to the free local model with `FR_BACKEND=ollama`, or to mock mode by removing `FR_BACKEND`.
+Windows PowerShell:
+
+```powershell
+cd dama-2026
+$env:ANTHROPIC_API_KEY="..."    # or $env:XAI_API_KEY / $env:OPENAI_API_KEY
+$env:FR_BACKEND="anthropic"       # or xai / openai
+py run_all.py
+```
+
+Windows Command Prompt: `set ANTHROPIC_API_KEY=...`, then `set FR_BACKEND=anthropic`, then `py run_all.py`. A key set this way lasts only for that terminal window. Switch back to the free local model with `FR_BACKEND=ollama`, or to mock mode by removing `FR_BACKEND` (Mac: `unset FR_BACKEND`; PowerShell: `Remove-Item Env:FR_BACKEND`).
 
 What stays the same, so you can compare side by side: the system prompts, the redaction, the injection check, the tool gate, the source trace, the fail-closed reconcile, and the four PASS checks. Every audit log line now carries `backend` and `model`, so a local log and a cloud log line up event for event. A cloud run adds one `G1 CLOUD EGRESS CHECKED` line before each model call.
 
 What changes, and why it is a Gateway 1 decision: a cloud run sends data to the provider. Here that data is SYNTHETIC and already redacted. Before every call, `gateways/cloud.py` scans the outgoing text and refuses to send if any raw sensitive value (SSN, phone, email, name, date of birth, address, health note) is present. On the OpenAI and xAI Responses API it also sets `store: false`. In your own systems, check your provider agreement (retention, training use, region) before any real data goes to a cloud model.
 
-Keys: read from the environment at call time, sent only to the provider you picked, never printed, logged, or written to disk. Do not paste a key into a file in this folder, and never commit one. Cost: a full run is four short calls, usually a few cents or less; check your provider's pricing page. Cloud models answer differently from run to run; the gates still decide the outcome.
+Keys: read from the environment at call time, sent only to the provider you picked, never printed, logged, or written to disk. Do not paste a key into a file in this folder, and never commit one. Cost: a full run is four calls, about 500 tokens in plus the reply and the model's thinking. The per-run estimates in the table use list prices as of October 2026 (per million tokens in/out: Claude Opus 5.5 $4/$20, Grok 4.7 $2/$6, GPT-6.1 Sol $2/$10, GPT-6 Astra $10/$50); check your provider's pricing page. Cloud models think before they answer, so expect about 5 to 30 seconds per call. Cloud models answer differently from run to run; the gates still decide the outcome.
 
-Test the cloud path with no key and no internet: `python3 tests/test_cloud.py` (from the repo root) runs every lab against a bundled stand-in for the Anthropic, Responses, and Chat Completions APIs, with the same misbehaving model the Ollama test uses. Add `--real anthropic` (or `--real-xai`) for one real, paid run. Or `make test-cloud`.
+Test the cloud path with no key and no internet: `python3 tests/test_cloud.py` (from the repo root) runs every lab against a bundled stand-in for the Anthropic, Responses, and Chat Completions APIs, with the same misbehaving model the Ollama test uses. Add `--real anthropic` (or `--real xai`, `--real openai`) for one real, paid run. Or `make test-cloud`.
 
 ## Use it in your own product
 

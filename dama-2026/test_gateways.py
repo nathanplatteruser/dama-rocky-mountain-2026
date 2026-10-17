@@ -32,6 +32,15 @@ class Gateways(unittest.TestCase):
         self.assertEqual(g3.trace_ok("Paid $41,200 [PC-2026-0417:P3].", ctx), [])
         self.assertEqual(len(g3.trace_ok("Paid $99,000 [PC-2026-0417:P3]. Great risk.", ctx)), 2)
 
+    def test_g3_tag_after_period(self):
+        # Grok style: the source tag comes after the period. Correct sentences must survive, bad ones still go.
+        ctx, _ = g3.retrieve("underwriting", ["loss", "limit", "salary"])
+        ok = "One ammonia leak claim in 2023 paid $41,200. [PC-2026-0417:P3] Requested limit is $14.5M building. [PC-2026-0417:P4]"
+        self.assertEqual(g3.trace_ok(ok, ctx), [])
+        self.assertEqual(g3.trace_ok("Paid $41,200. [PC-2026-0417:P3] [PC-2026-0417:P4]", ctx), [])
+        bad = "Paid $41,200. [PC-2026-0417:P3] Limit is $20M. [PC-2026-0417:P4] Best risk in the state."
+        self.assertEqual(len(g3.trace_ok(bad, ctx)), 2)
+
     def test_g4_fails_closed(self):
         r = g4.reconcile(DATA["treaty_claim"])
         self.assertFalse(r["ok"])

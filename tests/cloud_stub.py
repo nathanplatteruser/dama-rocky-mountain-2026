@@ -8,7 +8,7 @@ Replies come from ollama_stub.reply_for, so local and cloud runs see the same ad
 Key must equal STUB_KEY or the stub returns HTTP 401. Model 'missing-model' returns HTTP 404.
 STUB_FAIL=429 makes every call return HTTP 429. Binds 127.0.0.1 only. SYNTHETIC SAMPLE DATA ONLY.
 """
-import json, os
+import json, os, re
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import ollama_stub
 
@@ -47,6 +47,8 @@ class H(BaseHTTPRequestHandler):
                                     "usage": {"input_tokens": 10, "output_tokens": 10}})
         if path == "/v1/responses":
             text = ollama_stub.reply_for(req.get("instructions", ""), req.get("input", ""))
+            if str(req.get("model", "")).startswith("grok"):  # Grok style: source tag after the period
+                text = re.sub(r"\s*(\[[A-Z]{2}-\d{4}-\d{4}:[A-Z]\d\])\.", r". \1", text)
             return self._json(200, {"id": "resp_stub", "object": "response", "model": req["model"], "status": "completed",
                                     "output": [{"type": "reasoning", "summary": [{"type": "summary_text", "text": "SECRET-THOUGHTS should never print"}]},
                                                {"type": "message", "role": "assistant", "content": [{"type": "output_text", "text": text, "annotations": []}]}],

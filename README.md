@@ -33,9 +33,9 @@ python3 tests/test_ollama.py
 python3 tests/test_cloud.py
 ```
 
-## Local or cloud model: your choice
+## Free local or paid cloud: your choice
 
-The labs run the same way with a free local model or a paid cloud model. Same prompts, same four gateways, same audit log.
+Two versions, both run live: the free local version (Ollama, nothing leaves the laptop) and the paid cloud version (Claude, Grok, or ChatGPT with your own API key, roughly 1 to 15 cents a run). Same prompts, same four gateways, same audit log.
 
 ```
 cd dama-2026

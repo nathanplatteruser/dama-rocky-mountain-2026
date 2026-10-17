@@ -10,7 +10,7 @@ the provider you picked, and never printed, logged, or written to disk.
   FR_BACKEND=compatible  key: FR_API_KEY (optional for local servers), base URL: FR_BASE_URL (required)
 
 FR_MODEL overrides the model. FR_BASE_URL overrides the endpoint for any provider (tests, proxies, gateways).
-FR_MAX_TOKENS caps the reply (default 4096).
+FR_MAX_TOKENS caps the reply, including any thinking or reasoning tokens (default 16000; you pay only for what is used).
 
 Cloud runs send SYNTHETIC SAMPLE DATA to the provider. That is a Gateway 1 decision, so before every call
 this module checks the outgoing text: if any raw sensitive value from the record (SSN, phone, email, name,
@@ -87,7 +87,7 @@ def complete(backend: str, model: str, system: str, user: str) -> str:
         record("G1", "CLOUD CALL REFUSED", f"{backend}/{model}: outgoing text contained {len(leaks)} sensitive item(s) {leaks}; nothing sent")
         raise SystemExit("Refusing to send: the outgoing text contains sensitive data. Redact it first, or use the local model.")
     record("G1", "CLOUD EGRESS CHECKED", f"{backend}/{model}: 0 sensitive values in payload; SYNTHETIC SAMPLE DATA sent to {p['label']}")
-    max_tokens = int(os.environ.get("FR_MAX_TOKENS", "4096"))
+    max_tokens = int(os.environ.get("FR_MAX_TOKENS", "16000"))
     headers = {"Content-Type": "application/json"}
     if p["api"] == "messages":
         headers.update({"x-api-key": key, "anthropic-version": "2023-06-01"})
