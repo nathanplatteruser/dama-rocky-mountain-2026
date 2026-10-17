@@ -1,5 +1,6 @@
 """Run all four gateway labs. Mock mode by default: `python run_all.py`.
-Local model: `FR_BACKEND=ollama FR_MODEL=llama3.1:8b python run_all.py` (macOS/Linux)."""
+Local model: `FR_BACKEND=ollama FR_MODEL=llama3.1:8b python run_all.py` (macOS/Linux).
+Cloud model (your own key): `FR_BACKEND=anthropic python run_all.py` (or xai, openai, compatible)."""
 import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).parent / "gateways"))
 import common, g1_classify_redact, g2_prompt_guard, g3_context_scope, g4_selfcheck_exit  # noqa: E402
@@ -16,5 +17,7 @@ checks = {
 print("\n=== Summary ===")
 for k, v in checks.items():
     print(("PASS " if v else "FAIL ") + k)
+import llm  # noqa: E402
+print(f"Model: {llm.BACKEND} ({llm.model_label()})" + ("  SYNTHETIC SAMPLE DATA was sent to the provider; sensitive fields were redacted first" if llm.BACKEND in llm.CLOUD else ""))
 print(f"Audit log: {common.LOG}  ({len(common.LOG.read_text().splitlines())} entries)")
 sys.exit(0 if all(checks.values()) else 1)
