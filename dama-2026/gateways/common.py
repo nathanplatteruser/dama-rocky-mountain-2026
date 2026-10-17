@@ -18,8 +18,10 @@ POLICY = {
 def record(gateway: str, event: str, detail: str) -> None:
     """G4 audit log: append one line per decision. This file is the flight recorder."""
     LOG.parent.mkdir(exist_ok=True)
+    from llm import BACKEND, model_label  # which provider and model ran, so local and cloud logs compare side by side
     entry = {"t": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-             "agent": POLICY["agent"], "gateway": gateway, "event": event, "detail": detail}
+             "agent": POLICY["agent"], "gateway": gateway, "event": event, "detail": detail,
+             "backend": BACKEND, "model": model_label()}
     with LOG.open("a") as f:
         f.write(json.dumps(entry) + "\n")
     print(f"  [ledger] {gateway} {event}: {detail}")

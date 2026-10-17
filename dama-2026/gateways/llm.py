@@ -3,12 +3,18 @@
 Set FR_BACKEND=ollama to call a local Ollama server (http://localhost:11434).
 Set FR_MODEL to pick the model, for example llama3.1:8b or deepseek-r1:7b.
 Set FR_STREAM=1 to use streaming responses (NDJSON).
+Cloud option (paid, your own API key): FR_BACKEND=anthropic, xai, openai, or compatible. See cloud.py.
 Only the Python standard library is used, so there is nothing to pip install.
 """
 import json, os, re, urllib.error, urllib.request
 
 BACKEND = os.environ.get("FR_BACKEND", "mock").lower()
-MODEL = os.environ.get("FR_MODEL", "llama3.1:8b")
+CLOUD = ("anthropic", "xai", "openai", "compatible")
+if BACKEND in CLOUD:
+    import cloud
+    MODEL = os.environ.get("FR_MODEL") or cloud.default_model(BACKEND)
+else:
+    MODEL = os.environ.get("FR_MODEL", "llama3.1:8b")
 OLLAMA = os.environ.get("OLLAMA_HOST", "http://localhost:11434").rstrip("/")
 if not OLLAMA.startswith("http"):
     OLLAMA = "http://" + OLLAMA
@@ -21,6 +27,8 @@ def _strip_think(text: str) -> str:
 
 def complete(system: str, user: str, mock: str) -> str:
     """Return a model reply. In mock mode return the scripted reply so runs are repeatable."""
+    if BACKEND in CLOUD:
+        return _strip_think(cloud.complete(BACKEND, MODEL, system, user))
     if BACKEND != "ollama":
         return mock
     host = OLLAMA.split("//", 1)[1].split(":")[0]
@@ -51,5 +59,11 @@ def complete(system: str, user: str, mock: str) -> str:
         raise SystemExit(f"Could not reach Ollama at {OLLAMA} ({e}). Start it with `ollama serve`, or unset FR_BACKEND to use mock mode.")
 
 
+def model_label() -> str:
+    """Which model wrote the drafts, for the banner and the audit log."""
+    return MODEL if BACKEND == "ollama" or BACKEND in CLOUD else "scripted"
+
+
 def banner(title: str) -> None:
-    print(f"\n=== {title} | backend: {BACKEND}{' (' + MODEL + ')' if BACKEND == 'ollama' else ''} | SYNTHETIC SAMPLE DATA ===")
+    where = " | CLOUD: synthetic data goes to the provider" if BACKEND in CLOUD else ""
+    print(f"\n=== {title} | backend: {BACKEND}{' (' + MODEL + ')' if BACKEND == 'ollama' or BACKEND in CLOUD else ''} | SYNTHETIC SAMPLE DATA{where} ===")

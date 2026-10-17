@@ -3,6 +3,8 @@ import re
 from common import DATA, POLICY, record
 from llm import banner, complete
 
+SRC = r"\[[A-Z]{2}-\d{4}-\d{4}:[A-Z]\d\]"  # a source tag, for example [PC-2026-0417:P3]
+
 
 def retrieve(role: str, query_terms: list, max_lines: int = 2) -> list:
     """Return only lines this role may see, only lines that match, and no more than needed."""
@@ -21,6 +23,9 @@ def retrieve(role: str, query_terms: list, max_lines: int = 2) -> list:
 def trace_ok(answer: str, context: list) -> list:
     """Every sentence must cite [DOC:LINE] that was actually retrieved, and its numbers must appear there."""
     cited = {f"{c['doc']}:{c['line']}": c["text"] for c in context}
+    # Some models (Grok, for one) put the source tag after the period: "Paid $41,200. [PC-2026-0417:P3]".
+    # Move those tags back inside their sentence so a correct, cited sentence is not removed by mistake.
+    answer = re.sub(rf"\.((?:\s*{SRC})+)", lambda m: " " + " ".join(re.findall(SRC, m.group(1))) + ".", answer)
     problems = []
     for s in [x.strip() for x in re.split(r"(?<=\.)\s+", answer) if x.strip()]:
         refs = re.findall(r"\[([A-Z]{2}-\d{4}-\d{4}:[A-Z]\d)\]", s)
