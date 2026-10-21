@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Four Gateways | DAMA Rocky Mountain kit | Nathan Platter</title>
+<meta name="description" content="Slides, take-home PDFs, live demo, setup guide, and code for The Four Gateways: Engineering 101, data, prompt, context, and when to hand it back. DAMA Rocky Mountain, Oct 22, 2026.">
+<style>
+:root{--navy:#0F1E33;--purple:#6D28D9;--lav:#C4B5FD;--ink:#1F2937;--mute:#5B6472;--card:#F8FAFC;--line:#E2E8F0}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,system-ui,sans-serif;color:var(--ink);background:#fff;line-height:1.5}
+header{background:var(--navy);color:#fff;padding:28px 20px 24px}
+.wrap{max-width:880px;margin:0 auto}
+.kicker{color:var(--lav);font-weight:700;letter-spacing:.08em;font-size:13px;text-transform:uppercase}
+h1{font-size:34px;margin:6px 0 4px}h1+p{color:#CBD5E1;margin:0;font-size:18px}
+.who{margin-top:14px;font-size:15px;color:#CBD5E1}.who b{color:#fff}
+.banner{background:#FEF9C3;border-bottom:1px solid #FDE68A;padding:10px 20px;font-size:14px}
+main{padding:8px 20px 40px}
+h2{font-size:21px;color:var(--navy);margin:28px 0 10px;border-top:4px solid var(--purple);padding-top:10px;display:inline-block}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+a.card{display:block;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;text-decoration:none;color:var(--ink)}
+a.card:hover,a.card:focus{border-color:var(--purple);outline:none}
+a.card b{display:block;color:var(--navy);font-size:16px;margin-bottom:2px}
+a.card span{font-size:14px;color:var(--mute)}
+.tag{display:inline-block;background:var(--purple);color:#fff;font-size:12px;font-weight:700;border-radius:4px;padding:1px 7px;margin-right:6px}
+pre{background:#111827;color:#E5E7EB;padding:12px 14px;border-radius:8px;overflow:auto;font-size:13px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.box{border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.box h3{margin:4px 0 6px;font-size:16px;color:var(--purple)}
+footer{border-top:1px solid var(--line);color:var(--mute);font-size:13px;padding:16px 20px 30px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<div class="kicker">DAMA Rocky Mountain | October 22, 2026</div>
+<h1>The Four Gateways</h1>
+<p>Engineering 101: data, prompt, context, and when to hand it back</p>
+<div class="who"><b>Nathan Platter</b> | Lincoln NE</div>
+</div></header>
+<div class="banner"><div class="wrap"><b>Everything here is free to take and use.</b> Nothing is for sale and no product is named. All demo data is synthetic sample data: every name, number, and ID is invented. Teaching material, not legal advice.</div></div>
+<main class="wrap">
+
+<h2>Slides (PDF)</h2>
+<div class="grid">
+<a class="card" id="deck-demo" href="Four-Gateways-DAMA-2026-10-22-DEMO-CUT-45min.pdf"><b>Slides as presented (45 min)</b><span>DAMA Rocky Mountain cut, 18 slides including two appendix slides</span></a>
+<a class="card" id="deck-full" href="Four-Gateways-FULL-SESSION-75min.pdf"><b>Full session slides (75 min)</b><span>Adds the code walk-throughs, the about slide, and a 5-minute pair exercise. 22 slides</span></a>
+</div>
+
+<h2>Take-home PDFs</h2>
+<div class="grid">
+<a class="card" href="01-Four-Gateways-Desk-Checklist.pdf"><b>Desk checklist</b><span>Four gateways plus the five stop-the-machine questions, one page</span></a>
+<a class="card" href="02-Three-Roles-Map.pdf"><b>Three roles map</b><span>Data, prompt, and context engineering, with a Monday test for each</span></a>
+<a class="card" href="03-Prove-the-Gate-Worksheet.pdf"><b>Prove the gate worksheet</b><span>Blank on purpose: price the human check with your own numbers</span></a>
+<a class="card" href="04-Checklists-Pack.pdf"><b>Checklists pack</b><span>Pilot to production (10 questions), permission card, curveball checklist</span></a>
+</div>
+
+<h2>The demo</h2>
+<div class="grid">
+<a class="card" href="../flight-recorder/"><b><span class="tag">LIVE</span>Flight Recorder, four gateways view</b><span>Runs in your browser. Nothing is uploaded. No key, no login.</span></a>
+<a class="card" href="../flight-recorder/?gateways=0"><b>Plain view</b><span>The same demo without the gateway overlay</span></a>
+<a class="card" href="../docs/Four-Gateways-Setup-Guide.pdf"><b>Setup guide (PDF)</b><span>Mac and Windows: mock mode, free local Ollama, or your own cloud key</span></a>
+<a class="card" href="https://github.com/nathanplatteruser/dama-rocky-mountain-2026/archive/refs/heads/main.zip"><b>Download the code (ZIP)</b><span>Four labs, tests, AGENTS.md, guardrails.yaml. Python standard library only</span></a>
+</div>
+
+<h2>Run it on your laptop</h2>
+<div class="two">
+<div class="box"><h3>Free local</h3><p>Mock mode needs nothing. Ollama keeps everything on your laptop, $0.</p>
+<pre>cd dama-2026
+python3 run_all.py
+FR_BACKEND=ollama FR_MODEL=llama3.1:8b python3 run_all.py</pre></div>
+<div class="box"><h3>Bring your own key</h3><p>Claude, Grok, a ChatGPT model, or any OpenAI-compatible server. Redacted synthetic data only; the code refuses to send raw sensitive values. Your key is read from the terminal and never saved. Roughly 1 to 15 cents a run.</p>
+<pre>export ANTHROPIC_API_KEY=...   # your own key
+FR_BACKEND=anthropic python3 run_all.py
+# or FR_BACKEND=xai / openai, pick with FR_MODEL</pre></div>
+</div>
+<p>Code and full README: <a href="https://github.com/nathanplatteruser/dama-rocky-mountain-2026">github.com/nathanplatteruser/dama-rocky-mountain-2026</a></p>
+
+<h2>Reach Nathan</h2>
+<div class="grid">
+<a class="card" href="https://www.linkedin.com/in/nathan-platter"><b>LinkedIn</b><span>linkedin.com/in/nathan-platter</span></a>
+<a class="card" href="https://calendly.com/nathanplatter/15-minute-intro"><b>Book 15 minutes</b><span>A short first conversation. Nothing to prepare.</span></a>
+</div>
+</main>
+<footer><div class="wrap">MIT license. Teaching example, not legal advice. Check your own state's adopted rules and your provider agreements before any real data goes near a model. All demo data is synthetic sample data.</div></footer>
+</body>
+</html>

@@ -1,7 +1,7 @@
 """Test the cloud model option with no key and no internet.
 
 Starts tests/cloud_stub.py on 127.0.0.1:11436 and runs every lab with FR_BACKEND=anthropic, xai, openai, and
-compatible, against an adversarial and a compliant model. Checks the request shapes, that the key never shows up
+compatible, against an adversarial and a cooperative model. Checks the request shapes, that the key never shows up
 in output or the audit log, that the G1 egress check runs before every call, that thinking text is dropped, and
 that the cloud audit log matches the local Ollama log event for event (plus the egress lines).
 With --real-xai it also runs once against the real xAI API using XAI_API_KEY (paid, a few cents).
@@ -54,7 +54,7 @@ threading.Thread(target=srv.serve_forever, daemon=True).start()
 osrv = ollama_stub.serve(OPORT)
 threading.Thread(target=osrv.serve_forever, daemon=True).start()
 
-for mode in ["adversarial", "compliant"]:
+for mode in ["adversarial", "cooperative"]:
     ollama_stub.MODE = mode
     # local reference run, same stand-in model behaviour
     lp = subprocess.run([sys.executable, "run_all.py"], cwd=LABS, capture_output=True, text=True, timeout=900,

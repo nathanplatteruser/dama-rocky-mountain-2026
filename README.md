@@ -4,6 +4,8 @@ Teaching materials for the DAMA Rocky Mountain session, October 2026. Presented 
 
 **No pitch.** Nothing here is for sale and no product is named. It is vendor-neutral teaching material: take it and use it under the MIT license.
 
+**Kit page (slides, take-home PDFs, demo, setup guide, contact):** https://nathanplatteruser.github.io/dama-rocky-mountain-2026/kit/
+
 **Live demo (four gateways view on):** https://nathanplatteruser.github.io/dama-rocky-mountain-2026/flight-recorder/
 
 Add `?gateways=0` for the plain view. All policy data is SYNTHETIC SAMPLE DATA; see [DATA-SOURCES.md](flight-recorder/DATA-SOURCES.md).
@@ -22,6 +24,7 @@ Add `?gateways=0` for the plain view. All policy data is SYNTHETIC SAMPLE DATA; 
 - [`flight-recorder/`](flight-recorder/) the clickable demo, including the closing comparison table (fully human, OCR plus review, single-pass AI, agentic) with editable inputs
 - [`flight-recorder/takehomes/`](flight-recorder/takehomes/) permission-card template, pilot-to-production checklist, curveball checklist
 - [`dama-2026/`](dama-2026/) four gateways labs in Python (mock mode, a free local model through Ollama, or a cloud model of your choice: Claude, Grok, ChatGPT, or any OpenAI-compatible server), AGENTS.md, guardrails.yaml
+- [`kit/`](kit/) the kit page: both slide decks as PDF (45-minute DAMA cut and 75-minute full session) and four take-home PDFs
 - [`docs/`](docs/) setup guide (.pdf and .docx)
 - [`tests/`](tests/) `gateways.mjs` (browser checks), `test_ollama.py` (labs against a bundled Ollama API stub, or your real Ollama), `test_cloud.py` (labs against a bundled cloud API stub, or one real paid run)
 

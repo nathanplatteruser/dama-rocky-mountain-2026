@@ -4,7 +4,7 @@ Mimics the request and response shapes of:
   POST /v1/messages          Anthropic Messages API (x-api-key + anthropic-version headers; thinking + text blocks)
   POST /v1/responses         OpenAI and xAI Responses API (Bearer key; reasoning item + message item)
   POST /v1/chat/completions  OpenAI-compatible Chat Completions (Bearer key optional)
-Replies come from ollama_stub.reply_for, so local and cloud runs see the same adversarial or compliant model.
+Replies come from ollama_stub.reply_for, so local and cloud runs see the same adversarial or cooperative model.
 Key must equal STUB_KEY or the stub returns HTTP 401. Model 'missing-model' returns HTTP 404.
 STUB_FAIL=429 makes every call return HTTP 429. Binds 127.0.0.1 only. SYNTHETIC SAMPLE DATA ONLY.
 """

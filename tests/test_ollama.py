@@ -1,7 +1,7 @@
 """Run the four gateways labs against an Ollama-compatible server.
 
 Default: starts tests/ollama_stub.py on 127.0.0.1:11435 and runs every lab with FR_BACKEND=ollama
-for llama3.1:8b and deepseek-r1:7b, adversarial and compliant replies, streaming and not.
+for llama3.1:8b and deepseek-r1:7b, adversarial and cooperative replies, streaming and not.
 Also checks the error paths. With --real MODEL it also runs once against a real Ollama on 11434.
 Usage: python3 tests/test_ollama.py [--real qwen2.5:0.5b]
 """
@@ -32,7 +32,7 @@ def run(model, host=f"http://127.0.0.1:{PORT}", stream="0", extra_env=None):
 srv = stub.serve(PORT)
 threading.Thread(target=srv.serve_forever, daemon=True).start()
 
-for mode in ["adversarial", "compliant"]:
+for mode in ["adversarial", "cooperative"]:
     stub.MODE = mode
     for model in ["llama3.1:8b", "deepseek-r1:7b"]:
         for stream in ["0", "1"]:

@@ -7,7 +7,7 @@ Mimics the documented Ollama HTTP API (https://docs.ollama.com/api):
 Unknown model -> HTTP 404 {"error": "model '<name>' not found"}.
 
 STUB_MODE=adversarial (default) replies like a model that obeys the injection, invents numbers,
-and echoes sensitive data. STUB_MODE=compliant replies like a well-behaved model.
+and echoes sensitive data. STUB_MODE=cooperative replies like a well-behaved model.
 deepseek-r1:* replies wrap reasoning in <think>...</think>, as DeepSeek-R1 does.
 STUB_FAIL=500 makes every chat/generate call return HTTP 500.
 
