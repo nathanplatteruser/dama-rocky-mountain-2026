@@ -21,6 +21,7 @@ a.card{display:block;background:var(--card);border:1px solid var(--line);border-
 a.card:hover,a.card:focus{border-color:var(--purple);outline:none}
 a.card b{display:block;color:var(--navy);font-size:16px;margin-bottom:2px}
 a.card span{font-size:14px;color:var(--mute)}
+a.card span.tag{color:#fff;font-size:12px}
 .tag{display:inline-block;background:var(--purple);color:#fff;font-size:12px;font-weight:700;border-radius:4px;padding:1px 7px;margin-right:6px}
 pre{background:#111827;color:#E5E7EB;padding:12px 14px;border-radius:8px;overflow:auto;font-size:13px}
 .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
@@ -67,7 +68,7 @@ footer{border-top:1px solid var(--line);color:var(--mute);font-size:13px;padding
 <pre>cd dama-2026
 python3 run_all.py
 FR_BACKEND=ollama FR_MODEL=llama3.1:8b python3 run_all.py</pre></div>
-<div class="box"><h3>Bring your own key</h3><p>Claude, Grok, a ChatGPT model, or any OpenAI-compatible server. Redacted synthetic data only; the code refuses to send raw sensitive values. Your key is read from the terminal and never saved. Roughly 1 to 15 cents a run.</p>
+<div class="box"><h3>Bring your own key</h3><p>Claude, Grok, a ChatGPT model, or any OpenAI-compatible server. Redacted synthetic data only; the code refuses to send raw sensitive values. Your key stays in your terminal session and is never saved. Roughly 1 to 15 cents a run.</p>
 <pre>export ANTHROPIC_API_KEY=...   # your own key
 FR_BACKEND=anthropic python3 run_all.py
 # or FR_BACKEND=xai / openai, pick with FR_MODEL</pre></div>
