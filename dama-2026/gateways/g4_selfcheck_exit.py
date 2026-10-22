@@ -6,10 +6,16 @@ from g2_prompt_guard import detect_injection
 
 
 def reconcile(claim: dict) -> dict:
+    if not claim.get("sources"):
+        return {"ok": False, "issues": ["no source records supplied"]}
     vals = [s for s in claim["sources"] if s["paid_loss"] is not None]
     amounts = {s["paid_loss"] for s in vals}
-    dates = sorted({s["date_of_loss"] for s in vals})
     issues = []
+    if not vals:
+        issues.append("no source provides a paid loss")
+    if any(not s.get("date_of_loss") for s in vals):
+        return {"ok": False, "issues": issues + ["a paid-loss source is missing its date of loss"]}
+    dates = sorted({s["date_of_loss"] for s in vals})
     if len(amounts) > 1:
         issues.append(f"paid loss disagrees: {', '.join(f'${a:,}' for a in sorted(amounts))}")
     if len(dates) > 1:

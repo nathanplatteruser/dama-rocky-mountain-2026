@@ -9,7 +9,9 @@ PATTERNS = {"ssn": r"\b\d{3}-\d{2}-\d{4}\b", "phone": r"\b\d{3}-\d{3}-\d{4}\b", 
 def classify(field: str, value: str) -> str:
     if field in POLICY["sensitive_fields"] or any(re.search(p, value) for p in PATTERNS.values()):
         return "SENSITIVE"
-    return "PUBLIC" if field == "product" else "INTERNAL"
+    if field == "product":
+        return "PUBLIC"
+    return "INTERNAL" if field == "face_amount" else "SENSITIVE"
 
 
 def redact(rec: dict) -> dict:
