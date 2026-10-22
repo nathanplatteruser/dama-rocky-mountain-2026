@@ -31,7 +31,10 @@ Add `?gateways=0` for the plain view. All policy data is SYNTHETIC SAMPLE DATA; 
 ## Run it
 
 ```
-cd dama-2026 && python3 run_all.py && python3 -m unittest test_gateways
+cd dama-2026
+python3 run_all.py
+python3 -m unittest test_gateways
+cd ..
 python3 tests/test_ollama.py
 python3 tests/test_cloud.py
 ```
@@ -53,3 +56,9 @@ Cloud runs send the redacted SYNTHETIC data to the provider, and the code refuse
 Or `make test`. Windows users without make: run the python commands directly.
 
 Free to use under the MIT license.
+
+## Reuse and validation limits
+
+Download the entire repository with **Code > Download ZIP**. No GitHub account is required. The ZIP includes the guides, public slide decks, worksheets, demo, and lab code. Open `kit/index.html` after extraction for the local kit.
+
+Citation tags and number matching are limited checks: they do not establish semantic truth. Review every substantive claim against its source. These synthetic teaching labs are not production safeguards. The demo keeps unclicked human reviews pending.
