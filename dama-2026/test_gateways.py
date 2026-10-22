@@ -18,6 +18,19 @@ class Gateways(unittest.TestCase):
     def test_g1_pattern_catches_ssn_in_unexpected_field(self):
         self.assertEqual(g1.classify("free_text", "call 402-555-0143"), "SENSITIVE")
 
+    def test_unknown_field_is_sensitive(self):
+        self.assertEqual(g1.classify("diagnosis", "asthma"), "SENSITIVE")
+        self.assertNotIn("asthma", str(g1.redact({"diagnosis": "asthma"})))
+
+    def test_empty_sources_fail_closed(self):
+        self.assertFalse(g4.reconcile({"sources": []})["ok"])
+
+    def test_missing_amount_fails_closed(self):
+        self.assertFalse(g4.reconcile({"sources": [{"paid_loss": None, "date_of_loss": None, "text": "", "name": "empty"}]})["ok"])
+
+    def test_missing_date_fails_closed(self):
+        self.assertFalse(g4.reconcile({"sources": [{"paid_loss": 100, "date_of_loss": None, "text": "", "name": "partial"}]})["ok"])
+
     def test_g2_blocks(self):
         self.assertFalse(g2.gate("move_money", "person")[0])
         self.assertFalse(g2.gate("unknown_tool", "person")[0])
