@@ -71,7 +71,8 @@ footer{border-top:1px solid var(--line);color:var(--mute);font-size:13px;padding
 python3 run_all.py
 FR_BACKEND=ollama FR_MODEL=llama3.1:8b python3 run_all.py</pre></div>
 <div class="box"><h3>Bring your own key</h3><p>Claude, Grok, a ChatGPT model, or any OpenAI-compatible server. Redacted synthetic data only; the code refuses to send raw sensitive values. Your key stays in your terminal session and is never saved. Roughly 1 to 15 cents a run.</p>
-<pre>export ANTHROPIC_API_KEY=...   # your own key
+<pre>cd dama-2026
+export ANTHROPIC_API_KEY=...   # your own key
 FR_BACKEND=anthropic python3 run_all.py
 # or FR_BACKEND=xai / openai, pick with FR_MODEL</pre></div>
 </div>
